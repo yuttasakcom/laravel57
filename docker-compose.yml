@@ -8,14 +8,14 @@ services:
       - ./laravel:/var/www/html/laravel
       - ./ssl:/etc/nginx/ssl
     links:
-      - php
+      - laravel:php
       - mariadb:mysql
     ports:
       - "80:80"
       - "443:443"
     restart: always
 
-  php:
+  laravel:
     build: ./laravel
     container_name: laravel
     volumes:
