@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    volumes:
+      - ./laravel:/var/www/html/laravel
+      - ./ssl:/etc/nginx/ssl
+    links:
+      - php
+      - mariadb:mysql
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+
+  php:
+    build: ./laravel
+    container_name: laravel
+    volumes:
+      - ./laravel:/var/www/html/laravel
+    working_dir: "/var/www/html/laravel"
+    restart: always
+
+  mariadb:
+    image: mariadb:10.4.1
+    container_name: mariadb
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8
+    container_name: pma
+    links:
+      - mariadb:db
+    ports:
+      - "8080:80"
+    restart: always
